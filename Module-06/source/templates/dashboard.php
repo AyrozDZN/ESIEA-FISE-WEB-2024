@@ -18,9 +18,9 @@ include_once 'templates/parts/header.php';
             // Appeler la fonction getUserInfos pour obtenir les informations de l'utilisateur
             $userInfo = getUserInfos($userID);
             // Utiliser les informations récupérées
-            echo "Nom: " . $userInfo['nom'];
-            echo "Prénom: " . $userInfo['prenom'];
-            echo "Adresse: " . $userInfo['adresse'];
+            echo "Nom: " . $userInfo['nom'] . "<br>";
+            echo "Prénom: " . $userInfo['prenom'] . "<br>";
+            echo "Adresse: " . $userInfo['adresse'] . "<br>";
             echo "Email: " . $userInfo['email'];
         ?>
         <!--Supprimer le compte -->

@@ -32,7 +32,7 @@ function registerUser($nom, $prenom, $adresse, $email, $password, $confirmPasswo
             return "password_mismatch";
         } else {
             // Enregistrement réussi
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $hashedPassword = hash('sha512', $password);
             $stmt = $pdo->prepare("INSERT INTO utilisateurs (nom, prenom, adresse, email, password, role) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([$nom, $prenom, $adresse, $email, $hashedPassword, $defaultRole]);
             return true;
@@ -51,7 +51,7 @@ function loginUser($email, $password) {
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && hash('sha512', $password) == $user['password']) {
             // Connexion réussie, stocker l'ID de l'utilisateur en session
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['email'] = $user['email'];

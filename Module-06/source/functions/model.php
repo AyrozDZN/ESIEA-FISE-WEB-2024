@@ -4,7 +4,7 @@ include_once 'service.php';
 
 function dbConnect(){
     try{
-        $pdo = new PDO('mysql:host=localhost;dbname=siea_web', 'root', '');
+        $pdo = new PDO('mysql:host=localhost;dbname=esiea_web', 'root', 'root');
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $pdo;
     }catch(Exception $e){
@@ -32,7 +32,7 @@ function registerUser($nom, $prenom, $adresse, $email, $password, $confirmPasswo
             return "password_mismatch";
         } else {
             // Enregistrement réussi
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $hashedPassword = hash('sha512', $password);
             $stmt = $pdo->prepare("INSERT INTO utilisateurs (nom, prenom, adresse, email, password, role) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([$nom, $prenom, $adresse, $email, $hashedPassword, $defaultRole]);
             return true;
@@ -51,7 +51,7 @@ function loginUser($email, $password) {
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && hash('sha512', $password) == $user['password']) {
             // Connexion réussie, stocker l'ID de l'utilisateur en session
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['email'] = $user['email'];

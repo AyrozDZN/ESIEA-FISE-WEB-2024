@@ -1,5 +1,6 @@
 const adresseInput = document.getElementById('adresseInput');
 const suggestionsList = document.getElementById('suggestionsList');
+let marker = null;
 
 adresseInput.addEventListener('input', function() {
     const inputValue = adresseInput.value;
@@ -22,8 +23,24 @@ function afficherSuggestions(suggestions) {
     suggestionsList.innerHTML = ''; // Efface les anciennes suggestions
 
     suggestions.forEach(suggestion => {
-        const li = document.createElement('li');
-        li.textContent = suggestion.properties.label;
-        suggestionsList.appendChild(li);
+        const option = document.createElement('option');
+        option.value = `${suggestion.properties.label}`;
+        option.setAttribute("long", suggestion.geometry.coordinates[0]);
+        option.setAttribute("lat", suggestion.geometry.coordinates[1]);
+        suggestionsList.appendChild(option);
     });
 }
+
+adresseInput.addEventListener('change',function(event){
+
+    const label = event.target.value
+    var lat = document.querySelector(`#suggestionsList option[value='${label}']`).getAttribute("lat");
+    var long = document.querySelector(`#suggestionsList option[value='${label}']`).getAttribute("long");
+    console.log(label, lat, long)
+
+
+    if (marker != null) map.removeLayer(marker)
+    marker = L.marker([lat, long]).addTo(map);
+    marker.bindPopup(label).openPopup();
+    map.setView([lat, long], 13);
+});
